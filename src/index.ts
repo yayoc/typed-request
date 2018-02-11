@@ -1,4 +1,9 @@
 import * as http from "http";
+import * as Promise from "bluebird";
+
+Promise.config({
+  cancellation: true
+});
 
 export enum HttpMethod {
   Get = "get",
@@ -25,7 +30,7 @@ export interface RequestConfig {
 }
 
 export function request<T>(config: RequestConfig): Promise<T> {
-  return new Promise((resolve, reject) => {
+  return new Promise<T>((resolve, reject, onCancel) => {
     const req = http.request(config.url, res => {
       let body = "";
       res.setEncoding("utf8");
@@ -40,6 +45,16 @@ export function request<T>(config: RequestConfig): Promise<T> {
     req.on("error", e => {
       return reject(e);
     });
+
+    req.on("abort", e => {
+      return reject(e);
+    });
+    // Cancellation
+    if (onCancel) {
+      onCancel(() => {
+        req.abort();
+      });
+    }
     req.end();
   });
 }
