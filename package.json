@@ -1,0 +1,33 @@
+{
+  "name": "typed-request",
+  "version": "0.0.1",
+  "description": "A typed HTTP client written in TypeScript",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "author": "yayoc <hi@yayoc.com> (http://yayoc.com)",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^22.0.1",
+    "jest": "^22.1.4",
+    "ts-jest": "^22.0.1",
+    "typescript": "^2.6.2"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json"
+    ]
+  },
+  "dependencies": {}
+}
