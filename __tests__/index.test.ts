@@ -1,4 +1,21 @@
-import { request, HttpMethod } from "../src";
+import { request, HttpMethod, buildUrl } from "../src";
+import * as url from "url";
+
+describe("BuildUrl", () => {
+  const u = "https//sample.com";
+  let parsed;
+  beforeEach(() => {
+    parsed = url.parse(u);
+  });
+  it("should return a URL without queries", () => {
+    expect(buildUrl(parsed.path)).toEqual(u);
+  });
+
+  it("should return a URL with queries", () => {
+    const params = { key: "value" };
+    expect(buildUrl(parsed.path, params)).toEqual(`${u}?key=value`);
+  });
+});
 
 describe("Cancelation", () => {
   it("should return false unless Promise is caceled", () => {
