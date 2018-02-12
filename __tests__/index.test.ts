@@ -1,4 +1,4 @@
-import { request, HttpMethod, buildUrl } from "../src";
+import { request, HttpMethod, buildUrl, isHttps, getAuth } from "../src";
 import * as url from "url";
 
 describe("BuildUrl", () => {
@@ -14,6 +14,25 @@ describe("BuildUrl", () => {
   it("should return a URL with queries", () => {
     const params = { key: "value" };
     expect(buildUrl(parsed.path, params)).toEqual(`${u}?key=value`);
+  });
+});
+
+describe("isHttps", () => {
+  it("should return true when passing https protocol", () => {
+    const url = "https://sample.com";
+    expect(isHttps(url)).toBe(true);
+  });
+
+  it("should return false when passing http protocol", () => {
+    const url = "http://sample.com";
+    expect(isHttps(url)).toBe(false);
+  });
+});
+
+describe("getAuth", () => {
+  it("should return auth string", () => {
+    const params = { username: "foo", password: "bar" };
+    expect(getAuth(params)).toEqual("foo:bar");
   });
 });
 

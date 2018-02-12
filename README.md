@@ -56,65 +56,88 @@ const user: User = await request<User>(config);
 > request.get(config: RequestConfig);  
 > request.post(config: RequestConfig);  
 > request.put(config: RequestConfig);  
-> request.delete(config: RequestConfig);  
+> request.delete(config: RequestConfig);
 
 ### RequestConfig
 
 #### url: string
 
 #### method: HttpMethod
+
 ```ts
 import { HttpMethod } from "typed-request";
 {
-  method: HttpMethod.Get
+  method: HttpMethod.Get;
 }
 ```
 
 #### headers: Object
+
 ```ts
 {
   headers: {
-    Authorization: "Bearer foo"
+    Authorization: "Bearer foo";
   }
 }
 ```
 
 #### body: Object
+
 ```ts
 {
-  body: { param0: "value0" }
+  body: {
+    param0: "value0";
+  }
 }
 ```
 
 #### query: Object
+
 ```ts
 {
-  query: { param0: "value0" }
+  query: {
+    param0: "value0";
+  }
 }
 ```
+
+#### auth: { username: string, password: string }
+
+```ts
+{
+  auth: { username: "foo", password: "bar" }
+}
+```
+
 #### bodyValidator: (body: Object) => boolean
 
 If `bodyValidator` returns `false`, a request will return Promise reject immediately.
 
 ```ts
 {
-  bodyValidator: ((body: Object) => body.length > 0)
+  bodyValidator: (body: Object) => body.length > 0;
 }
 ```
+
 #### responseProcessor: <T>(body: Object) => T
+
 `responseProcessor` is a function which can process response data what you want with type definition.
 
 #### errorProcessor: (body: Object, error: Error) => Error
+
 `errorProcessor` is a function which can process error response which is returend as Promise reject.
 
 #### retryCount: number
-You can specify a number of retring requests. 
+
+You can specify a number of retring requests.
 
 #### timeout: number
+
 If the request takes longer than timeout you specified, request should be aborted.
 Default value is 1000.
 
 #### outputCurlCommand: boolean
+
 You can specify if output a cURL command for per request. True is default.
 
 ```ts
@@ -128,7 +151,7 @@ const config = {
     Authorization: "Bearer foo",
     "Content-Type": "application/json"
   }
-}
+};
 request<Review>(config);
 ```
 
@@ -141,8 +164,8 @@ curl -X POST -H "Authorization: Bearer foo" -H "Content-Type: application/json" 
 #### abort: () => void
 
 ```ts
-  const r = await request<User[]>({
-    url: "https://example.com/users"
-  });
-  r.abort();
+const r = await request<User[]>({
+  url: "https://example.com/users"
+});
+r.abort();
 ```

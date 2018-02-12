@@ -22,12 +22,18 @@ export interface RequestConfig {
   headers?: http.OutgoingHttpHeaders;
   query?: { [key: string]: string };
   body?: { [key: string]: string } | string;
+  auth?: AuthParams;
   bodyValidator?: (body: Object) => boolean;
   responseProcessor?: <T>(body: Object) => T;
   errorProcessor?: (body: Object, error: Error) => Error;
   retryCount?: number;
   timeout?: number;
   outputCurlCommand?: boolean;
+}
+
+export interface AuthParams {
+  username: string;
+  password: string;
 }
 
 const getRequestArgs = (config: RequestConfig): http.ClientRequestArgs => {
@@ -40,7 +46,8 @@ const getRequestArgs = (config: RequestConfig): http.ClientRequestArgs => {
       method: config.method
     },
     config.headers ? { headers: config.headers } : null,
-    config.timeout ? { timeout: config.timeout } : null
+    config.timeout ? { timeout: config.timeout } : null,
+    config.auth ? { auth: getAuth(config.auth) } : null
   );
 };
 
@@ -56,7 +63,16 @@ export const buildUrl = (
     .join("&")}`;
 };
 
-const getRequsetBody = (config: RequestConfig): any => {};
+export const getAuth = (params: AuthParams): string => {
+  return `${params.username}:${params.password}`;
+};
+
+const getRequestBody = (config: RequestConfig): any => {};
+
+export const isHttps = (u: string): boolean => {
+  const parsed = url.parse(u);
+  return parsed.protocol === "https:";
+};
 
 export function request<T>(config: RequestConfig): Promise<T> {
   return new Promise<T>((resolve, reject, onCancel) => {
