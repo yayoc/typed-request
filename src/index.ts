@@ -67,8 +67,6 @@ export const getAuth = (params: AuthParams): string => {
   return `${params.username}:${params.password}`;
 };
 
-const getRequestBody = (config: RequestConfig): any => {};
-
 export const isHttps = (u: string): boolean => {
   const parsed = url.parse(u);
   return parsed.protocol === "https:";
@@ -100,6 +98,10 @@ export function request<T>(config: RequestConfig): Promise<T> {
       onCancel(() => {
         req.abort();
       });
+    }
+
+    if (config.body) {
+      req.write(config.body);
     }
     req.end();
   });
