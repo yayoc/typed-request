@@ -94,6 +94,9 @@ export function request<T>(config: RequestConfig): Promise<T> {
       });
       res.on("end", () => {
         let response = transformResponse(responseBody) as T;
+        if (config.bodyValidator && !config.bodyValidator(response)) {
+          return reject(new Error("Response body is not valid"));
+        }
         return resolve(response);
       });
     });

@@ -80,4 +80,24 @@ describe("Test actual requests", () => {
         });
       });
   });
+
+  describe("Tests body validator", () => {
+    it("should return Promise.reject when bodyValidator returns false", () => {
+      server = http
+        .createServer((req, res) => {
+          res.end();
+        })
+        .listen(port, () => {
+          expect(
+            request({
+              url: `http://localhost:${port}`,
+              method: HttpMethod.Get,
+              bodyValidator: body => {
+                return false;
+              }
+            })
+          ).rejects.toEqual(new Error("Response body is not valid"));
+        });
+    });
+  });
 });
