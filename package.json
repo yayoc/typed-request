@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@types/bluebird": "^3.5.20",
-    "bluebird": "^3.5.1"
+    "bluebird": "^3.5.1",
+    "chalk": "^2.3.1"
   }
 }

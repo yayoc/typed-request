@@ -1,6 +1,11 @@
 import * as http from "http";
 import * as url from "url";
 import * as Promise from "bluebird";
+import { getCurlCommand } from "./helpers/cURLOutput";
+import chalk from "chalk";
+
+const log = console.log;
+const info = (message: string) => log(chalk.green(message));
 
 Promise.config({
   cancellation: true
@@ -86,6 +91,9 @@ export const transformResponse = (data: any): any => {
 export function request<T>(config: RequestConfig): Promise<T> {
   return new Promise<T>((resolve, reject, onCancel) => {
     const args = getRequestArgs(config);
+    if (config.outputCurlCommand) {
+      info(getCurlCommand(args, config.body));
+    }
     const req = http.request(args, res => {
       let responseBody = "";
       res.setEncoding("utf8");
