@@ -1,0 +1,19 @@
+{
+  "name": "typed-request-examples",
+  "version": "0.0.1",
+  "description": "A typed HTTP client written in TypeScript",
+  "main": "./server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node ./server.js"
+  },
+  "author": "yayoc <hi@yayoc.com> (http://yayoc.com)",
+  "license": "MIT",
+  "dependencies": {
+    "@types/express": "^4.11.1",
+    "express": "^4.16.2"
+  },
+  "devDependencies": {
+    "typescript": "^2.7.2"
+  }
+}
