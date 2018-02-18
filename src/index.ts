@@ -112,6 +112,10 @@ export function request<T>(config: RequestConfig): Promise<T> {
       });
     });
     req.on("error", e => {
+      if (config.retryCount && config.retryCount > 0) {
+        const retryCount = config.retryCount - 1;
+        return request<T>({ ...config, retryCount });
+      }
       return reject(e);
     });
 
