@@ -24,7 +24,7 @@ export interface RequestConfig {
   body?: { [key: string]: string } | string;
   auth?: AuthParams;
   bodyValidator?: (body: Object) => boolean;
-  responseProcessor?: <T>(body: Object) => T;
+  responseProcessor?: (body: Object) => any;
   errorProcessor?: (body: Object, error: Error) => Error;
   retryCount?: number;
   timeout?: number;
@@ -96,6 +96,9 @@ export function request<T>(config: RequestConfig): Promise<T> {
         let response = transformResponse(responseBody) as T;
         if (config.bodyValidator && !config.bodyValidator(response)) {
           return reject(new Error("Response body is not valid"));
+        }
+        if (config.responseProcessor) {
+          response = config.responseProcessor(response);
         }
         return resolve(response);
       });

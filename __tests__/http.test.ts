@@ -100,4 +100,24 @@ describe("Test actual requests", () => {
         });
     });
   });
+
+  describe("Tests response processor", () => {
+    it("should process response body", () => {
+      server = http
+        .createServer((req, res) => {
+          res.end();
+        })
+        .listen(port, () => {
+          expect(
+            request<string>({
+              url: `http://localhost:${port}`,
+              method: HttpMethod.Get,
+              responseProcessor: (_: Object) => {
+                return "foo";
+              }
+            })
+          ).resolves.toEqual("foo");
+        });
+    });
+  });
 });
