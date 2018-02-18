@@ -72,18 +72,29 @@ export const isHttps = (u: string): boolean => {
   return parsed.protocol === "https:";
 };
 
+export const transformResponse = (data: any): any => {
+  if (typeof data === "string") {
+    try {
+      data = JSON.parse(data);
+    } catch (e) {
+      /* Ignore */
+    }
+  }
+  return data;
+};
+
 export function request<T>(config: RequestConfig): Promise<T> {
   return new Promise<T>((resolve, reject, onCancel) => {
     const args = getRequestArgs(config);
     const req = http.request(args, res => {
-      let body = "";
+      let responseBody = "";
       res.setEncoding("utf8");
       res.on("data", chunk => {
-        body += chunk;
+        responseBody += chunk;
       });
       res.on("end", () => {
-        let result = JSON.parse(body) as T;
-        return resolve(result);
+        let response = transformResponse(responseBody) as T;
+        return resolve(response);
       });
     });
     req.on("error", e => {

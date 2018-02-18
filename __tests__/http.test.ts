@@ -64,4 +64,20 @@ describe("Test actual requests", () => {
         });
       });
   });
+
+  it("should return empty string", done => {
+    server = http
+      .createServer((req, res) => {
+        res.end();
+      })
+      .listen(port, () => {
+        request<string>({
+          url: `http://localhost:${port}`,
+          method: HttpMethod.Get
+        }).then(res => {
+          expect(res).toBe("");
+          done();
+        });
+      });
+  });
 });
