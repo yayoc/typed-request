@@ -101,7 +101,7 @@ export function request<T>(config: RequestConfig): Promise<T> {
     }
 
     if (config.body) {
-      req.write(config.body);
+      req.write(JSON.stringify(config.body));
     }
     req.end();
   });
