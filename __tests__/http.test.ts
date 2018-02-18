@@ -120,4 +120,24 @@ describe("Test actual requests", () => {
         });
     });
   });
+
+  describe("Tests error processor", () => {
+    it("should process error", () => {
+      server = http
+        .createServer((req, res) => {
+          res.end();
+        })
+        .listen(port, () => {
+          expect(
+            request({
+              url: `http://localhost:${port}`,
+              method: HttpMethod.Get,
+              errorProcessor: (_: Object, e: Error) => {
+                return new Error("foo");
+              }
+            })
+          ).rejects.toEqual(new Error("foo"));
+        });
+    });
+  });
 });
