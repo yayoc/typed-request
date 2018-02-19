@@ -1,4 +1,5 @@
 import * as http from "http";
+import * as https from "https";
 import * as url from "url";
 import * as Promise from "bluebird";
 import { getCurlCommand } from "./helpers/cURLOutput";
@@ -29,7 +30,7 @@ export interface RequestConfig {
   body?: { [key: string]: string } | string;
   auth?: AuthParams;
   bodyValidator?: (body: Object) => boolean;
-  responseProcessor?: (body: Object) => any;
+  responseProcessor?: <T>(response: any) => T;
   errorProcessor?: (body: Object, error: Error) => Error;
   retryCount?: number;
   timeout?: number;
@@ -80,7 +81,7 @@ export const isHttps = (u: string): boolean => {
   return parsed.protocol === "https:";
 };
 
-export const transformResponse = (data: any): any => {
+export const parseResponse = (data: string): any => {
   if (typeof data === "string") {
     try {
       data = JSON.parse(data);
@@ -96,26 +97,31 @@ export const getRequestBody = (body: RequestConfig["body"]): string => {
   return typeof body === "string" ? body : JSON.stringify(body);
 };
 
-export function request<T>(config: RequestConfig): Promise<T> {
+interface H {
+  request(options: http.RequestOptions | string | URL, callback?: (res: http.IncomingMessage) => void): http.ClientRequest
+}
+
+export function request<T = any>(config: RequestConfig): Promise<T> {
   return new Promise<T>((resolve, reject, onCancel) => {
     const args = getRequestArgs(config);
     if (config.outputCurlCommand) {
       const command = getCurlCommand(args, config.body);
       info(command);
     }
-    const req = http.request(args, res => {
+    const h: H = isHttps(config.url) ? https : http;
+    const req = h.request(args, res => {
       let responseBody = "";
       res.setEncoding("utf8");
       res.on("data", chunk => {
         responseBody += chunk;
       });
       res.on("end", () => {
-        let response = transformResponse(responseBody) as T;
+        let response = parseResponse(responseBody) as T;
         if (config.bodyValidator && !config.bodyValidator(response)) {
           return reject(new Error("Response body is not valid"));
         }
         if (config.responseProcessor) {
-          response = config.responseProcessor(response);
+          response = config.responseProcessor<T>(response);
         }
         return resolve(response);
       });

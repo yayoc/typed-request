@@ -37,4 +37,25 @@ app.post("/posts", (_: express.Request, res: express.Response) => {
   });
 });
 
+app.put("/posts/1", (_, res: express.Response) => {
+  const url = "https://jsonplaceholder.typicode.com/posts/1";
+  const body = JSON.stringify({
+    id: 1,
+    title: "foo",
+    body: "bar",
+    userId: 1
+  });
+  request<Post>({
+    url,
+    method: HttpMethod.Put,
+    body,
+    headers: {
+      "Content-type": "application/json; charset=UTF-8"
+    },
+    outputCurlCommand: true
+  }).then(response => {
+    res.json({ body: response.body });
+  });
+});
+
 app.listen(8080);
