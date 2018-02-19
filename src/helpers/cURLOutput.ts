@@ -5,12 +5,20 @@ export const getHttpMethod = (method: string = HttpMethod.Get): string => {
   return method.toUpperCase();
 };
 
-const getHeaders = (input: any | undefined): string[] => {
+export const getHeaders = (input: any | undefined): string[] => {
   if (!input) return [];
   return Object.keys(input).map((key: string) => {
     const value: string = input[key];
     return `-H "${key}: ${value}"`;
   });
+};
+
+export const getBody = (body: RequestConfig["body"]): string => {
+  if (!body) return "";
+  if (typeof body === "string") {
+    return body;
+  }
+  return JSON.stringify(body);
 };
 
 export const getCurlCommand = (
@@ -20,11 +28,12 @@ export const getCurlCommand = (
   const method = getHttpMethod(input.method);
   const headers = getHeaders(input.headers);
   const url = `${input.protocol}//${input.hostname}${input.path}`;
+  const bodyCommand = getBody(body);
 
   return (
     `curl -X ${method} ` +
     (headers.length > 0 ? `${headers.join(" ")} ` : "") +
-    (body ? `-d '${body}' ` : "") +
+    (bodyCommand ? `-d '${bodyCommand}' ` : "") +
     `"${url}"`
   );
 };
