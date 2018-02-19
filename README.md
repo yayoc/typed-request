@@ -2,6 +2,12 @@
 
 > A typed HTTP client for node.js.
 
+## Example
+
+Type safe response with generic
+
+![intellisense](./docs/intellisense.png)
+
 ## Features
 
 * [x] Make a http request for NodeJS.
@@ -11,26 +17,6 @@
 * [x] Process HTTP respnse / error
 * [ ] Cancellation of request / Retring request
 * [ ] Complete documentation
-
-## Example
-
-Type safe response with generic
-
-```ts
-import request from "typed-request";
-
-interface User {
-  id: number;
-  name: string;
-}
-
-try {
-  const users = await request<User[]>({
-    url: "https://example.com/users"
-  });
-  const ids: number[] = users.map(u => u.id);
-}
-```
 
 ## APIs
 
