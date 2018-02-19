@@ -41,7 +41,7 @@ export interface AuthParams {
   password: string;
 }
 
-const getRequestArgs = (config: RequestConfig): http.ClientRequestArgs => {
+export const getRequestArgs = (config: RequestConfig): http.ClientRequestArgs => {
   const parsed = url.parse(config.url);
   return Object.assign(
     {

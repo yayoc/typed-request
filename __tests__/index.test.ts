@@ -1,4 +1,4 @@
-import { request, HttpMethod, buildUrl, isHttps, getAuth } from "../src";
+import { request, HttpMethod, buildUrl, isHttps, getAuth, RequestConfig, getRequestArgs } from "../src";
 import * as url from "url";
 
 describe("BuildUrl", () => {
@@ -56,3 +56,45 @@ describe("Cancelation", () => {
     });
   });
 });
+
+describe("getRequestArgs", () => {
+  const config: RequestConfig = {
+    url: "https://someapi.com",
+    method: HttpMethod.Get
+  }
+  it("should return arguments", () => {
+    const args = getRequestArgs(config);
+    expect(args).toEqual({
+      protocol: "https:",
+      hostname: "someapi.com",
+      port: null,
+      path: "/",
+      method: "get"
+    })
+  });
+
+  it("should return with optional arguments", () => {
+    const headers = {
+      "Content-type": "application/json; charset=UTF-8"
+    };
+    const auth = {
+      username: "foo",
+      password: "bar"
+    }
+    const c = { ...config, headers, timeout: 10, auth };
+    const args = getRequestArgs(c);
+    expect(args).toEqual({
+      protocol: "https:",
+      hostname: "someapi.com",
+      port: null,
+      path: "/",
+      method: "get",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      },
+      timeout: 10,
+      auth: "foo:bar"
+    })
+
+  })
+})
