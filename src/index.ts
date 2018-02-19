@@ -45,6 +45,7 @@ const getRequestArgs = (config: RequestConfig): http.ClientRequestArgs => {
   const parsed = url.parse(config.url);
   return Object.assign(
     {
+      protocol: parsed.protocol,
       hostname: parsed.hostname,
       port: parsed.port,
       path: buildUrl(parsed.path!, config.query),
@@ -92,7 +93,8 @@ export function request<T>(config: RequestConfig): Promise<T> {
   return new Promise<T>((resolve, reject, onCancel) => {
     const args = getRequestArgs(config);
     if (config.outputCurlCommand) {
-      info(getCurlCommand(args, config.body));
+      const command = getCurlCommand(args, config.body);
+      info(command);
     }
     const req = http.request(args, res => {
       let responseBody = "";
@@ -130,7 +132,11 @@ export function request<T>(config: RequestConfig): Promise<T> {
     }
 
     if (config.body) {
-      req.write(JSON.stringify(config.body));
+      const body =
+        typeof config.body === "string"
+          ? config.body
+          : JSON.stringify(config.body);
+      req.write(body);
     }
     req.end();
   });

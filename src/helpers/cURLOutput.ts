@@ -19,11 +19,12 @@ export const getCurlCommand = (
 ): string => {
   const method = getHttpMethod(input.method);
   const headers = getHeaders(input.headers);
+  const url = `${input.protocol}//${input.hostname}${input.path}`;
 
   return (
     `curl -X ${method} ` +
     (headers.length > 0 ? `${headers.join(" ")} ` : "") +
-    (body ? `-d "${body}" ` : "") +
-    `"${input}"`
+    (body ? `-d '${body}' ` : "") +
+    `"${url}"`
   );
 };
