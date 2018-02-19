@@ -41,7 +41,9 @@ export interface AuthParams {
   password: string;
 }
 
-export const getRequestArgs = (config: RequestConfig): http.ClientRequestArgs => {
+export const getRequestArgs = (
+  config: RequestConfig
+): http.ClientRequestArgs => {
   const parsed = url.parse(config.url);
   return Object.assign(
     {
@@ -89,6 +91,11 @@ export const transformResponse = (data: any): any => {
   return data;
 };
 
+export const getRequestBody = (body: RequestConfig["body"]): string => {
+  if (!body) return "";
+  return typeof body === "string" ? body : JSON.stringify(body);
+};
+
 export function request<T>(config: RequestConfig): Promise<T> {
   return new Promise<T>((resolve, reject, onCancel) => {
     const args = getRequestArgs(config);
@@ -131,12 +138,9 @@ export function request<T>(config: RequestConfig): Promise<T> {
       });
     }
 
-    if (config.body) {
-      const body =
-        typeof config.body === "string"
-          ? config.body
-          : JSON.stringify(config.body);
-      req.write(body);
+    const requestBody = getRequestBody(config.body);
+    if (requestBody) {
+      req.write(requestBody);
     }
     req.end();
   });

@@ -1,5 +1,5 @@
 import * as http from "http";
-import { HttpMethod, RequestConfig } from "../";
+import { HttpMethod, RequestConfig, getRequestBody } from "../";
 
 export const getHttpMethod = (method: string = HttpMethod.Get): string => {
   return method.toUpperCase();
@@ -13,14 +13,6 @@ export const getHeaders = (input: any | undefined): string[] => {
   });
 };
 
-export const getBody = (body: RequestConfig["body"]): string => {
-  if (!body) return "";
-  if (typeof body === "string") {
-    return body;
-  }
-  return JSON.stringify(body);
-};
-
 export const getCurlCommand = (
   input: http.ClientRequestArgs,
   body: RequestConfig["body"]
@@ -28,7 +20,7 @@ export const getCurlCommand = (
   const method = getHttpMethod(input.method);
   const headers = getHeaders(input.headers);
   const url = `${input.protocol}//${input.hostname}${input.path}`;
-  const bodyCommand = getBody(body);
+  const bodyCommand = getRequestBody(body);
 
   return (
     `curl -X ${method} ` +
