@@ -4,11 +4,11 @@
 
 ## Features
 
-* [ ] Make a http request for NodeJS.
-* [ ] Returns a typed Promise with TypeScript Generic.
-* [ ] Promise based
-* [ ] cURL command output
-* [ ] HTTP response validation
+* [x] Make a http request for NodeJS.
+* [x] Returns a typed Promise with TypeScript Generic.
+* [x] cURL command output
+* [x] HTTP response validation
+* [x] Process HTTP respnse / error
 * [ ] Cancellation of request / Retring request
 * [ ] Complete documentation
 
@@ -50,14 +50,6 @@ const config = {
 
 const user: User = await request<User>(config);
 ```
-
-#### Shorthand requests
-
-> request.get(config: RequestConfig);  
-> request.post(config: RequestConfig);  
-> request.put(config: RequestConfig);  
-> request.delete(config: RequestConfig);
-
 ### RequestConfig
 
 #### url: string
